@@ -50,6 +50,22 @@ npm run dev     # http://localhost:3000
 
 零配置即可跑通全流程：不配置任何 API Key 时，识别、抠图、场景合成、中文排版、编码导出**全部在浏览器本地完成**，图片不会上传到任何第三方。
 
+## 在线预览与部署
+
+**单文件在线演示**
+
+```bash
+npm run build:static   # 生成 dist/index.html
+```
+
+产物是一个完全自包含的 HTML（内联 CSS / JS / 示例商品图，约 380KB，不请求任何外部资源）：双击就能打开，也可以丢到任意静态托管（GitHub Pages、对象存储、Cloudflare Pages）。演示模式下没有后端，文案与生图都走内置引擎，界面会顶部说明这一点。
+
+页面在 claude.ai 的 Artifact 沙箱里运行时，浏览器自发的下载会被拦截，`lib/download.ts` 会自动改用宿主的 downloads 能力保存单张图片（ZIP 不在允许的格式内，需本地导出）。
+
+**完整站点部署（带 API 路由）**
+
+推到 Vercel / Netlify 等支持 Next.js 的平台即可，Root Directory 选 `ai-product-image-factory`，构建命令 `npm run build`。需要真实生图能力时在平台的环境变量里配置下面这些 Key。
+
 ## 接入真实生图模型（可选）
 
 复制 `.env.example` 为 `.env.local` 并填写：
@@ -83,7 +99,10 @@ lib/
   copy.ts                  # 文案引擎与大模型提示词
   prompts.ts               # 生图提示词
   pack.ts                  # ZIP 打包与素材清单
+  download.ts              # 保存文件（<a download> / Artifact downloads 能力）
   providers.ts             # Gemini / OpenAI 适配器
+static/entry.tsx           # 单文件演示入口
+scripts/build-static.mjs   # 打包成自包含 dist/index.html
 ```
 
 流水线的 6 个步骤与界面一一对应：商品视觉识别 → 商品主体分离 → 白底商品图 → 场景光影融合 → 中文营销排版 → 多比例封装导出。

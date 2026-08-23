@@ -6,7 +6,8 @@ import ConfigPanel from './ConfigPanel';
 import Gallery from './Gallery';
 import Pipeline from './Pipeline';
 import { buildLocalCopy } from '@/lib/copy';
-import { buildPackage, downloadBlob, packageFileName } from '@/lib/pack';
+import { saveFile } from '@/lib/download';
+import { buildPackage, packageFileName } from '@/lib/pack';
 import { canvasToBlob, fitToSpec, renderAsset } from '@/lib/render';
 import {
   RATIOS,
@@ -47,6 +48,15 @@ const ENGINE_NAME: Record<EngineStatus['provider'], string> = {
   gemini: 'Gemini 生图模型',
   openai: 'OpenAI 生图模型',
 };
+
+interface StaticGlobals {
+  __AIPF_STATIC__?: boolean;
+  __AIPF_SAMPLE__?: string;
+}
+
+/** 静态构建（单文件在线演示）没有后端，直接用内置引擎 */
+const staticGlobals = (): StaticGlobals =>
+  typeof window === 'undefined' ? {} : (window as unknown as StaticGlobals);
 
 /** 让出一帧，保证流水线状态能实时渲染 */
 const yieldFrame = () =>
@@ -103,7 +113,14 @@ export default function Factory() {
     assetsRef.current = assets;
   }, [assets]);
 
+  const [isStatic, setIsStatic] = useState(false);
+  const [sample, setSample] = useState<string | null>(null);
+
   useEffect(() => {
+    const globals = staticGlobals();
+    setIsStatic(Boolean(globals.__AIPF_STATIC__));
+    setSample(globals.__AIPF_SAMPLE__ ?? null);
+    if (globals.__AIPF_STATIC__) return;
     fetch('/api/generate')
       .then((r) => r.json())
       .then((data: EngineStatus) => setEngine(data))
@@ -138,6 +155,11 @@ export default function Factory() {
       };
       setCopyLoading(true);
       lastCopyNameRef.current = payload.productName;
+      if (staticGlobals().__AIPF_STATIC__) {
+        setCopy(buildLocalCopy(payload));
+        setCopyLoading(false);
+        return;
+      }
       try {
         const res = await fetch('/api/copy', {
           method: 'POST',
@@ -365,6 +387,21 @@ export default function Factory() {
     }
   }, [category, copy, file, patchStep, produceCanvas, productName, ratios, shots, style, vision]);
 
+  const handleSave = useCallback(async (blob: Blob, fileName: string) => {
+    const outcome = await saveFile(blob, fileName);
+    if (outcome.status === 'saved' || outcome.status === 'declined') {
+      if (outcome.status === 'declined') setNotice(null);
+      return;
+    }
+    setNotice(outcome.message ?? '保存失败，请重试。');
+  }, []);
+
+  const handleLoadSample = useCallback(async () => {
+    if (!sample) return;
+    const blob = await (await fetch(sample)).blob();
+    await handleFile(new File([blob], '示例商品图.jpg', { type: blob.type || 'image/jpeg' }));
+  }, [handleFile, sample]);
+
   const handlePackage = useCallback(async () => {
     if (assets.length === 0) return;
     setPacking(true);
@@ -381,13 +418,13 @@ export default function Factory() {
         },
         vision,
       });
-      downloadBlob(blob, packageFileName(productName || '未命名商品'));
+      await handleSave(blob, packageFileName(productName || '未命名商品'));
     } catch (e) {
       setError(e instanceof Error ? e.message : '打包失败');
     } finally {
       setPacking(false);
     }
-  }, [assets, category, copy, productName, ratios, shots, style, vision]);
+  }, [assets, category, copy, handleSave, productName, ratios, shots, style, vision]);
 
   const totalBytes = useMemo(() => assets.reduce((sum, a) => sum + a.bytes, 0), [assets]);
   const engineLabel = engine.ready && engine.provider !== 'local' ? ENGINE_NAME[engine.provider] : ENGINE_NAME.local;
@@ -424,6 +461,7 @@ export default function Factory() {
           copyLoading={copyLoading}
           running={running}
           onFile={handleFile}
+          onLoadSample={sample ? () => void handleLoadSample() : undefined}
           onProductName={setProductName}
           onCategory={(v) => {
             setCategory(v);
@@ -469,6 +507,12 @@ export default function Factory() {
 
           <Pipeline steps={steps} running={running} elapsed={elapsed} engineLabel={engineLabel} />
 
+          {isStatic && (
+            <div className="alert" style={{ marginBottom: 14 }}>
+              在线演示：识别、抠图、场景合成、中文排版全部在你的浏览器里完成，图片不会上传到服务器。
+              单张图片可直接保存；完整 ZIP 素材包与接入生图模型需要在本地运行本项目。
+            </div>
+          )}
           {error && (
             <div className="alert error" style={{ marginBottom: 14 }}>
               {error}
@@ -496,7 +540,7 @@ export default function Factory() {
               </div>
             </div>
           ) : (
-            <Gallery assets={assets} onDownload={(asset) => downloadBlob(asset.blob, asset.fileName)} />
+            <Gallery assets={assets} onDownload={(asset) => void handleSave(asset.blob, asset.fileName)} />
           )}
         </main>
       </div>

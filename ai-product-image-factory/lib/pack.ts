@@ -106,17 +106,6 @@ export async function buildPackage(options: {
   return zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
 }
 
-export function downloadBlob(blob: Blob, fileName: string) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = fileName;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 4000);
-}
-
 export function packageFileName(productName: string) {
   return `${safeName(productName)}_AI素材包.zip`;
 }

@@ -20,6 +20,8 @@ interface Props {
   copyLoading: boolean;
   running: boolean;
   onFile: (file: File) => void;
+  /** 静态演示里提供一张内置示例图 */
+  onLoadSample?: () => void;
   onProductName: (value: string) => void;
   onCategory: (value: CategoryKey) => void;
   onStyle: (value: StyleKey) => void;
@@ -105,6 +107,18 @@ export default function ConfigPanel(props: Props) {
               <div className="hint" style={{ marginTop: 6 }}>
                 支持 JPG / PNG / WebP，建议主体完整、背景干净，单张不超过 {MAX_MB}MB
               </div>
+              {props.onLoadSample && (
+                <button
+                  className="btn btn-sm"
+                  style={{ marginTop: 12 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    props.onLoadSample?.();
+                  }}
+                >
+                  没有素材？载入示例商品图
+                </button>
+              )}
             </div>
           </div>
         )}
