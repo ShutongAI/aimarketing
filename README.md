@@ -1,3 +1,14 @@
+# aimarketing
+
+本仓库收录可直接使用的 AI 营销工具：
+
+| 项目 | 说明 |
+| --- | --- |
+| [ai-product-image-factory](ai-product-image-factory/) | **AI 商品图工厂**：上传一张普通商品照片，一次生成 1:1 / 3:4 / 4:3 / 16:9 的白底商品图、场景主图、促销图，并输出商品标题与 3 条卖点，支持一键下载完整素材包 |
+| [brand-copy-system](brand-copy-system-repo/) | **品牌文案体系**：输入 5 个字段，一次产出完整自洽的品牌文案体系（文档见下方） |
+
+---
+
 First public release of the brand copy system prompt template.
 
 # Brand Copy System
