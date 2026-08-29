@@ -1,0 +1,75 @@
+<title>商家分层运营大屏</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/*__CSS__*/
+</style>
+
+<header class="topbar">
+  <div class="brand">QuickAudience 商家分层运营大屏
+    <small>商家运营负责人视角 · 分层 / 通道 / 预警 / 动作提醒</small></div>
+  <button class="topnote" id="aboutBtn">数据说明</button>
+  <nav class="tabs" id="tabs">
+    <button class="tab on" data-view="overview">总览看板</button>
+    <button class="tab" data-view="tiering">客户分层</button>
+    <button class="tab" data-view="channel">产品消耗</button>
+    <button class="tab" data-view="detail">商家明细</button>
+    <button class="tab" data-view="alert">预警看板<span class="badge" id="alertBadge">–</span></button>
+    <button class="tab" data-view="action">动作提醒</button>
+  </nav>
+</header>
+
+<section class="filters" id="filters">
+  <div class="fgroup">
+    <label>统计时间段</label>
+    <div class="chiprow" id="rangeChips">
+      <button class="chip" data-n="1">近1月</button>
+      <button class="chip" data-n="3">近3月</button>
+      <button class="chip" data-n="6">近6月</button>
+      <button class="chip on" data-n="12">近12月</button>
+    </div>
+  </div>
+  <div class="fgroup"><label>起始月</label><select id="startSel"></select></div>
+  <div class="fgroup"><label>截止月</label><select id="endSel"></select></div>
+  <div class="fgroup"><label>行业</label><select id="industrySel" multiple size="1"></select></div>
+  <div class="fgroup"><label>区域</label><select id="regionSel" multiple size="1"></select></div>
+  <div class="fgroup"><label>客户来源</label><select id="sourceSel"><option value="">全部</option></select></div>
+  <div class="fgroup"><label>合同类型</label><select id="contractSel"><option value="">全部</option></select></div>
+  <div class="fgroup"><label>分层</label><select id="tierSel"><option value="">全部</option></select></div>
+  <div class="fgroup"><label>战略客户</label><select id="strategicSel">
+    <option value="">全部</option><option value="是">是</option><option value="否">否</option></select></div>
+  <div class="fgroup"><label>分层口径</label>
+    <div class="chiprow" id="rescoreChips">
+      <button class="chip on" data-v="1">区间重算</button>
+      <button class="chip" data-v="0">年度基准</button>
+    </div>
+  </div>
+  <div class="fgroup spacer"><label>&nbsp;</label>
+    <button class="btn ghost" id="resetBtn">重置筛选</button></div>
+  <div class="hint" id="windowHint"></div>
+</section>
+
+<main>
+  <div id="view-overview" class="grid view"></div>
+  <div id="view-tiering" class="grid view" hidden></div>
+  <div id="view-channel" class="grid view" hidden></div>
+  <div id="view-detail" class="grid view" hidden></div>
+  <div id="view-alert" class="grid view" hidden></div>
+  <div id="view-action" class="grid view" hidden></div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.1/echarts.min.js"></script>
+<script>
+/*__EXTRA__*/
+</script>
+<script>
+/*__DATA__*/
+</script>
+<script>
+/*__CORE__*/
+</script>
+<script>
+/*__LAYER__*/
+</script>
+<script>
+/*__VIEWS__*/
+</script>

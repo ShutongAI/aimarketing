@@ -57,3 +57,20 @@ FEISHU_WEBHOOK="https://open.feishu.cn/open-apis/bot/v2/hook/xxxx" python3 run.p
 2. **销售负责人是派生的**。原表无此字段，按「区域 + 商家ID 哈希」分配到 14 名虚拟销售，仅用于演示飞书通知的收件路由。
 
 区间分层重算在满 12 个月窗口下与工作簿公式结果完全一致（SKA 26 / KA 121 / 腰部 695 / 基础长尾 528 / 新客观察期 4 / 未激活 626），可作为口径复刻正确性的回归基准。
+
+## 网页版（单文件，无需服务端）
+
+```bash
+python3 scripts/build_web.py     # → dist/qa-dashboard.html
+```
+
+把服务端的 metrics / alerts / actions 三层复刻成 `web/data-layer.js`，暴露与 Flask 版**完全相同**的
+`api(path, extra)` 契约，因此 `app/static/js/views.js` 被原样复用——两版共用同一份视图代码，
+不会出现「改了一版忘了另一版」。构建产物 ~500KB，数据内嵌，直接双击打开即可。
+
+**已做过输出对齐校验**：近12月 / 近6月 / 近3月三个窗口下，网页版与 Flask 版的消耗总额、活跃商家数、
+ARPU、头部占比、六层家数与消耗占比、洛伦兹头部10%、预警总数与加权敞口、7 条规则命中量、
+三通道消耗/使用商家/环比，全部逐项一致（仅有 1 元级的浮点舍入差）。
+
+唯一的功能差别：网页版没有服务端，**飞书推送只生成报文不外发**，点「推送」会弹出与线上一致的
+interactive card JSON，可直接贴进飞书机器人调试台。Flask 版配置 `FEISHU_WEBHOOK` 后是真实推送。

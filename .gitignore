@@ -4,3 +4,5 @@ node_modules/
 package-lock.json
 shot.mjs
 package.json
+shot-web.mjs
+parity.mjs

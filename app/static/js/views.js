@@ -655,7 +655,7 @@ async function renderAction() {
         <span class="spacer"></span>
         <span class="hint">${d.feishu_configured
           ? '飞书 Webhook 已配置，推送将直发群机器人'
-          : '未配置 FEISHU_WEBHOOK，推送进入 Dry-run（只生成卡片不外发）'}</span>
+          : '未配置 Webhook，推送只生成飞书报文、不外发'}</span>
         <button class="btn" id="acNotify">批量推送 ${d.actions.length} 条到飞书</button>
       </div>
       <div class="actions">${d.actions.slice(0, 24).map(actCard).join('') || '<div class="empty">当前筛选下没有待办动作。</div>'}</div>
@@ -767,7 +767,7 @@ function switchView(v) {
   currentView = v;
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.view === v));
   document.querySelectorAll('.view').forEach(el => { el.hidden = el.id !== 'view-' + v; });
-  location.hash = v;
+  try { history.replaceState(null, '', '#' + v); } catch (e) { /* 内嵌环境可能禁止改地址栏 */ }
   render();
 }
 
@@ -845,7 +845,8 @@ async function boot() {
   });
 
   updateHint();
-  const hash = location.hash.slice(1);
+  let hash = '';
+  try { hash = location.hash.slice(1); } catch (e) { /* 同上 */ }
   switchView(VIEWS[hash] ? hash : 'overview');
 }
 

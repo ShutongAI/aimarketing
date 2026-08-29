@@ -1,0 +1,39 @@
+/* 网页版增补：字体、数据说明弹层、飞书卡片弹层 */
+
+body {
+  font-family: 'IBM Plex Sans', system-ui, -apple-system, 'PingFang SC',
+               'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+.brand { font-weight: 600; }
+/* 需要竖向对齐的数字才用等宽，独立大数字保持比例字形 */
+td.num, th.num, .act .meta b, .delta, .tag { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+.kpi .value, .card > h3 { font-feature-settings: 'ss02'; }
+pre.card-json { font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+.topnote {
+  margin-left: 18px; padding: 4px 10px; border-radius: 6px; font-size: 11.5px;
+  background: rgba(57,135,229,.12); border: 1px solid rgba(57,135,229,.35);
+  color: #a9c8ee; cursor: pointer; font-family: inherit;
+}
+.topnote:hover { background: rgba(57,135,229,.22); }
+
+.modal {
+  position: fixed; inset: 0; z-index: 80; display: flex; align-items: center;
+  justify-content: center; background: rgba(6,8,12,.72); padding: 28px;
+}
+.modal .box {
+  background: var(--surface); border: 1px solid var(--baseline); border-radius: 12px;
+  max-width: 780px; width: 100%; max-height: 84vh; overflow: auto; padding: 20px 22px 22px;
+  box-shadow: 0 24px 70px rgba(0,0,0,.6);
+}
+.modal h2 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+.modal .lead { color: var(--ink-2); font-size: 12.5px; margin: 0 0 14px; line-height: 1.7; }
+.modal h4 { margin: 16px 0 6px; font-size: 12.5px; color: var(--ink); font-weight: 600; }
+.modal p, .modal li { color: var(--ink-2); font-size: 12.5px; line-height: 1.75; margin: 4px 0; }
+.modal ul { margin: 4px 0; padding-left: 18px; }
+.modal .close { float: right; }
+.modal pre.card-json { white-space: pre-wrap; word-break: break-all; }
+.modal code {
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+  padding: 1px 5px; font-size: 11.5px; font-family: 'IBM Plex Mono', ui-monospace, monospace;
+}
