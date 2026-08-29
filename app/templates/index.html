@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QuickAudience 商家分层运营大屏</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2213%22 font-size=%2213%22>📊</text></svg>">
+<!-- ECharts 本地内置，大屏可完全离线运行 -->
+<script src="{{ url_for('static', filename='vendor/echarts.min.js') }}"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">QuickAudience 商家分层运营大屏
+    <small>商家运营负责人视角 · 分层 / 通道 / 预警 / 动作提醒</small></div>
+  <nav class="tabs" id="tabs">
+    <button class="tab on" data-view="overview">总览看板</button>
+    <button class="tab" data-view="tiering">客户分层</button>
+    <button class="tab" data-view="channel">产品消耗</button>
+    <button class="tab" data-view="detail">商家明细</button>
+    <button class="tab" data-view="alert">预警看板<span class="badge" id="alertBadge">–</span></button>
+    <button class="tab" data-view="action">动作提醒</button>
+  </nav>
+</header>
+
+<section class="filters" id="filters">
+  <div class="fgroup">
+    <label>统计时间段</label>
+    <div class="chiprow" id="rangeChips">
+      <button class="chip" data-n="1">近1月</button>
+      <button class="chip" data-n="3">近3月</button>
+      <button class="chip" data-n="6">近6月</button>
+      <button class="chip on" data-n="12">近12月</button>
+    </div>
+  </div>
+  <div class="fgroup"><label>起始月</label><select id="startSel"></select></div>
+  <div class="fgroup"><label>截止月</label><select id="endSel"></select></div>
+  <div class="fgroup"><label>行业</label><select id="industrySel" multiple size="1"></select></div>
+  <div class="fgroup"><label>区域</label><select id="regionSel" multiple size="1"></select></div>
+  <div class="fgroup"><label>客户来源</label><select id="sourceSel"><option value="">全部</option></select></div>
+  <div class="fgroup"><label>合同类型</label><select id="contractSel"><option value="">全部</option></select></div>
+  <div class="fgroup"><label>分层</label><select id="tierSel"><option value="">全部</option></select></div>
+  <div class="fgroup"><label>战略客户</label><select id="strategicSel">
+    <option value="">全部</option><option value="是">是</option><option value="否">否</option></select></div>
+  <div class="fgroup"><label>分层口径</label>
+    <div class="chiprow" id="rescoreChips">
+      <button class="chip on" data-v="1">区间重算</button>
+      <button class="chip" data-v="0">年度基准</button>
+    </div>
+  </div>
+  <div class="fgroup spacer"><label>&nbsp;</label>
+    <button class="btn ghost" id="resetBtn">重置筛选</button></div>
+  <div class="hint" id="windowHint"></div>
+</section>
+
+<main>
+  <div id="view-overview" class="grid view"></div>
+  <div id="view-tiering" class="grid view" hidden></div>
+  <div id="view-channel" class="grid view" hidden></div>
+  <div id="view-detail" class="grid view" hidden></div>
+  <div id="view-alert" class="grid view" hidden></div>
+  <div id="view-action" class="grid view" hidden></div>
+</main>
+
+<script src="{{ url_for('static', filename='js/core.js') }}"></script>
+<script src="{{ url_for('static', filename='js/views.js') }}"></script>
+</body>
+</html>
